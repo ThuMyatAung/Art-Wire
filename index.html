@@ -1,1 +1,231 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Wire — အနုပညာ သတင်း</title>
+<style>
+  :root { --ink:#1c1917; --paper:#faf7f2; --accent:#9a3412; --accent2:#4338ca; --line:#e7e0d4; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Noto Sans Myanmar", "Pyidaungsu", system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  header { background: var(--ink); color:#f5efe6; padding: 16px; }
+  header h1 { margin:0; font-size: 20px; letter-spacing:.3px; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.75; }
+  .bar { display:flex; gap:8px; align-items:center; padding:10px 14px; background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; flex-wrap:wrap; }
+  nav.tabs { display:flex; gap:6px; padding:10px 14px 0; flex-wrap:wrap; }
+  button.tab { border:1px solid var(--line); background:#fff; padding:7px 12px; border-radius:999px; font-family:inherit; font-size:13px; cursor:pointer; }
+  button.tab.on { background: var(--accent); border-color: var(--accent); color:#fff; font-weight:700; }
+  button.act { background: var(--accent2); color:#fff; border:none; padding:7px 14px; border-radius:8px; font-family:inherit; font-size:12.5px; cursor:pointer; }
+  button.mini { border:1px solid var(--line); background:#fff; padding:4px 10px; border-radius:999px; font-family:inherit; font-size:11.5px; cursor:pointer; }
+  button.mini:hover { border-color: var(--accent); color: var(--accent); }
+  main { padding: 12px 14px 30px; max-width: 860px; margin: 0 auto; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+  .src { display:inline-block; font-size:10.5px; font-weight:700; color:var(--accent); background:#fdf0e7; border-radius:6px; padding:2px 7px; margin-right:6px; }
+  .when { font-size:11px; color:#78716c; }
+  .ttl { font-size:15.5px; font-weight:700; margin:6px 0 4px; line-height:1.5; }
+  .ttl a { color: var(--ink); text-decoration:none; }
+  .ttl a:hover { color: var(--accent); }
+  .snip { font-size:12.5px; color:#44403c; line-height:1.7; margin:2px 0 8px; }
+  .trbox { background:#f5f3ff; border:1px solid #ddd6fe; border-radius:10px; padding:9px 11px; font-size:13px; line-height:1.8; margin-top:8px; display:none; }
+  .trbox .tag { font-size:10.5px; font-weight:700; color: var(--accent2); }
+  .small { font-size:11.5px; color:#78716c; }
+  .err { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; border-radius:10px; padding:10px 12px; font-size:12.5px; }
+  input[type=text], input[type=password] { font-family:inherit; font-size:13px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; width:100%; }
+  details summary { cursor:pointer; font-size:12.5px; color: var(--accent2); font-weight:700; }
+  .spin { display:inline-block; animation: sp 1s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .foot { text-align:center; font-size:11px; color:#a8a29e; padding: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🖼️ Art Wire — အနုပညာ သတင်း</h1>
+  <p>နေ့စဉ် art သတင်း · အနုပညာရှင်/ပြပွဲ · ပြတိုက်/Art Fair · ဈေးကွက်/လေလံ · Market Reports · မြန်မာ/အရှေ့တောင်အာရှ — အချိန်နဲ့ တပြေးညီ (RSS)</p>
+</header>
+<div class="bar">
+  <button class="act" id="refreshBtn">🔄 ပြန်ဖတ်</button>
+  <span class="small" id="updatedAt">—</span>
+  <span style="flex:1"></span>
+  <span class="small">ဘာသာပြန်: ခလုတ် တစ်ချက် = အခမဲ့ တိုက်ရိုက် · 🤖 = Gemini key ရှိ ရင် အရည်အသွေး မြင့်</span>
+</div>
+<nav class="tabs" id="tabNav"></nav>
+<main id="feedMain"><p class="small">⏳ သတင်း ဖတ် နေ တယ်…</p></main>
+<div style="max-width:860px;margin:0 auto;padding:0 14px;">
+  <details class="card">
+    <summary>⚙️ ဆက်တင် — Gemini API Key (AI ဘာသာပြန် အတွက်၊ မထည့် လည်း ရ)</summary>
+    <p class="small">PDF-OCR app မှာ သုံး တဲ့ key အတိုင်း ပဲ။ Key ကို ဖုန်း/ကွန်ပျူတာ ထဲမှာ ပဲ သိမ်း တယ် (localStorage) — ဘာသာပြန် ခေါ် တဲ့ အချိန် Google ဆီ ပဲ သွား တယ်။ Key မရှိ ရင် အခမဲ့ တိုက်ရိုက် ဘာသာပြန် ကို သုံး ပါ။</p>
+    <input type="password" id="gemKey" placeholder="Gemini API key ထည့်ပါ">
+    <div style="margin-top:8px;"><button class="act" id="saveKey">သိမ်း မယ်</button> <span class="small" id="keyState"></span></div>
+  </details>
+</div>
+<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Google News (Art Basel/Artsy/Artprice စသည် ရှာ ဖွေ) — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။</p>
+<div id="bootErr" style="display:none" class="err"></div>
+<script>
+window.addEventListener('error', function (e) { var d = document.getElementById('bootErr'); if (d) { d.style.display = 'block'; d.textContent = '⚠️ app error: ' + (e.message || 'unknown'); } });
 
+// ---------------- feeds & categories ----------------
+const GN = (q) => 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
+const CATEGORIES = [
+  { id: 'daily', label: '📰 နေ့စဉ် သတင်း', feeds: [
+    { name: 'ARTnews', url: 'https://www.artnews.com/feed/' },
+    { name: 'Hyperallergic', url: 'https://hyperallergic.com/feed/' },
+    { name: 'Google News', url: GN('contemporary art') } ] },
+  { id: 'artists', label: '🎨 အနုပညာရှင် / ပြပွဲ', feeds: [
+    { name: 'Google News', url: GN('artist exhibition OR retrospective OR biennale OR "solo show" art') },
+    { name: 'Google News', url: GN('"street art" OR mural artist exhibition') } ] },
+  { id: 'fairs', label: '🏛️ ပြတိုက် / Art Fair', feeds: [
+    { name: 'Google News', url: GN('"art fair" OR "Art Basel" OR Frieze OR museum exhibition') },
+    { name: 'Google News', url: GN('"Art SG" OR "art fair" Asia museum') } ] },
+  { id: 'market', label: '💹 ဈေးကွက် / လေလံ', feeds: [
+    { name: 'Google News', url: GN('art auction Sotheby\'s OR Christie\'s OR "art market"') },
+    { name: 'Google News', url: GN('Basquiat OR "contemporary art" auction record price') } ] },
+  { id: 'reports', label: '📊 Market Reports', feeds: [
+    { name: 'Google News', url: GN('"art market report" OR Artprice OR "Art Basel and UBS" OR Artsy market report') },
+    { name: 'Google News', url: GN('Gen Z art collectors market trend') } ] },
+  { id: 'sea', label: '🌏 မြန်မာ / အရှေ့တောင်အာရှ', feeds: [
+    { name: 'Google News', url: GN('Myanmar art OR "Southeast Asian art" OR Yangon art') },
+    { name: 'Google News', url: GN('Thai art OR Vietnamese art OR "Singapore art" exhibition') } ] }
+];
+const state = { tab: 'daily', cache: {} };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const strip = (s) => { const d = document.createElement('div'); d.innerHTML = s || ''; return d.textContent.trim(); };
+function relTime(t) {
+  const ms = Date.now() - t;
+  if (isNaN(ms)) return '';
+  const h = Math.floor(ms / 3600000), d = Math.floor(h / 24);
+  if (d >= 1) return d + ' ရက် အလို';
+  if (h >= 1) return h + ' နာရီ အလို';
+  return 'ခုနတင်';
+}
+
+// ---------------- fetching ----------------
+async function fetchFeed(feed) {
+  const api = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url);
+  const r = await fetch(api);
+  if (!r.ok) throw new Error('feed HTTP ' + r.status);
+  const j = await r.json();
+  if (j.status !== 'ok') throw new Error('feed parse');
+  return (j.items || []).map(it => ({
+    source: feed.name === 'Google News' ? strip(it.title).split(' - ').pop() || 'Google News' : feed.name,
+    title: strip(it.title),
+    link: it.link,
+    date: new Date(it.pubDate).getTime(),
+    snip: strip(it.description).slice(0, 260)
+  }));
+}
+async function loadCategory(catId, force) {
+  if (state.cache[catId] && !force) { renderItems(catId); return; }
+  const main = $('feedMain');
+  main.innerHTML = '<p class="small"><span class="spin">⏳</span> သတင်း ဖတ် နေ တယ်…</p>';
+  const cat = CATEGORIES.find(c => c.id === catId);
+  const results = await Promise.allSettled(cat.feeds.map(fetchFeed));
+  let items = [];
+  results.forEach(r => { if (r.status === 'fulfilled') items = items.concat(r.value); });
+  const seen = new Set();
+  items = items.filter(it => { const k = it.title.toLowerCase().slice(0, 60); if (seen.has(k) || !it.title) return false; seen.add(k); return true; });
+  items.sort((a, b) => b.date - a.date);
+  state.cache[catId] = items.slice(0, 30);
+  $('updatedAt').textContent = 'နောက်ဆုံး ဖတ်: ' + new Date().toLocaleTimeString();
+  if (!items.length) {
+    main.innerHTML = '<div class="err">သတင်း မရ ပါ — feed လမ်းကြောင်း ခေတ္တ ပိတ်/နှုန်း ပြည့် နေနိုင် တယ်။ ခဏ နေ မှ 🔄 ပြန်ဖတ် နှိပ် ပါ။</div>';
+    return;
+  }
+  renderItems(catId);
+}
+function renderItems(catId) {
+  const items = state.cache[catId] || [];
+  $('feedMain').innerHTML = items.map((it, i) => `
+    <div class="card">
+      <span class="src">${esc(it.source)}</span><span class="when">${relTime(it.date)}</span>
+      <div class="ttl"><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)}</a></div>
+      ${it.snip ? `<div class="snip">${esc(it.snip)}</div>` : ''}
+      <button class="mini" onclick="quickTr('${catId}', ${i}, this)">🇲🇲 ဘာသာပြန်</button>
+      <button class="mini" onclick="aiTr('${catId}', ${i}, this)">🤖 AI နဲ့ ပြန်</button>
+      <a class="mini" style="text-decoration:none;display:inline-block" href="${esc(it.link)}" target="_blank" rel="noopener">မူရင်း ဖတ် →</a>
+      <div class="trbox" id="tr-${catId}-${i}"></div>
+    </div>`).join('');
+}
+
+// ---------------- translation ----------------
+async function gtxTranslate(text) {
+  const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=my&dt=t&q=' + encodeURIComponent(text.slice(0, 450));
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('gtx ' + r.status);
+  const j = await r.json();
+  return (j[0] || []).map(seg => seg[0]).join('');
+}
+async function myMemoryTranslate(text) {
+  const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text.slice(0, 450)) + '&langpair=en|my';
+  const r = await fetch(url);
+  const j = await r.json();
+  if (!j.responseData || !j.responseData.translatedText) throw new Error('mymemory');
+  return j.responseData.translatedText;
+}
+async function quickTr(catId, i, btn) {
+  const it = state.cache[catId][i];
+  const box = $('tr-' + catId + '-' + i);
+  box.style.display = 'block';
+  box.innerHTML = '<span class="tag">ဘာသာပြန် နေ တယ်…</span>';
+  const text = it.title + (it.snip ? ' — ' + it.snip : '');
+  try {
+    const out = await gtxTranslate(text);
+    box.innerHTML = '<span class="tag">🇲🇲 ဘာသာပြန် (အခမဲ့ တိုက်ရိုက်)</span><br>' + esc(out);
+  } catch (e) {
+    try {
+      const out2 = await myMemoryTranslate(text);
+      box.innerHTML = '<span class="tag">🇲🇲 ဘာသာပြန် (MyMemory)</span><br>' + esc(out2);
+    } catch (e2) {
+      box.innerHTML = '<span class="tag">⚠️ ဘာသာပြန် မရ ပါ — နောက် မှ ပြန် စမ်း ပါ (သို့) 🤖 AI နဲ့ စမ်း ပါ</span>';
+    }
+  }
+}
+async function aiTr(catId, i, btn) {
+  const it = state.cache[catId][i];
+  const box = $('tr-' + catId + '-' + i);
+  box.style.display = 'block';
+  const key = (localStorage.getItem('artnews_gemini_key') || '').trim();
+  if (!key) {
+    box.innerHTML = '<span class="tag">🤖 Gemini key မရှိ သေး ပါ — အောက် က ⚙️ ဆက်တင် မှာ key ထည့် ပါ (သို့) 🇲🇲 အခမဲ့ ဘာသာပြန် ကို သုံး ပါ</span>';
+    return;
+  }
+  box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် နေ တယ်…</span>';
+  try {
+    const prompt = 'Translate this art news item into clear, natural Burmese (မြန်မာ) as spoken by an art journalist. Keep artist names, artwork titles, gallery/museum names and numbers accurate. Return only the translation.\n\nTitle: ' + it.title + '\nSummary: ' + it.snip;
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + encodeURIComponent(key), {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+    const out = j.candidates[0].content.parts.map(p => p.text || '').join('');
+    box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် (Gemini)</span><br>' + esc(out);
+  } catch (e) {
+    box.innerHTML = '<span class="tag">⚠️ AI ဘာသာပြန် မရ: ' + esc(e.message) + ' — key/quota စစ် ပါ</span>';
+  }
+}
+
+// ---------------- init ----------------
+const nav = $('tabNav');
+CATEGORIES.forEach(cat => {
+  const b = document.createElement('button');
+  b.className = 'tab' + (cat.id === state.tab ? ' on' : '');
+  b.textContent = cat.label;
+  b.onclick = () => {
+    state.tab = cat.id;
+    nav.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    loadCategory(cat.id, false);
+  };
+  nav.appendChild(b);
+});
+$('refreshBtn').onclick = () => loadCategory(state.tab, true);
+$('saveKey').onclick = () => {
+  try { localStorage.setItem('artnews_gemini_key', $('gemKey').value.trim()); } catch (e) {}
+  $('keyState').textContent = '✓ သိမ်း ပြီး';
+};
+try { const k = localStorage.getItem('artnews_gemini_key'); if (k) { $('gemKey').value = k; $('keyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+loadCategory(state.tab, false);
+</script>
+</body>
+</html>
