@@ -34,12 +34,36 @@
   details summary { cursor:pointer; font-size:12.5px; color: var(--accent2); font-weight:700; }
   .spin { display:inline-block; animation: sp 1s linear infinite; }
   @keyframes sp { to { transform: rotate(360deg); } }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .tile { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; }
+  .tile:active { opacity:.86; }
+  .tile .ph { aspect-ratio:4/3; background:linear-gradient(135deg,#ece5d8,#d9cdb6); display:flex; align-items:center; justify-content:center; font-size:30px; color:#b8ab94; overflow:hidden; }
+  .tile .ph img { width:100%; height:100%; object-fit:cover; display:block; }
+  .tile.hero { grid-column:1 / -1; }
+  .tile.hero .ph { aspect-ratio:16/9; font-size:46px; }
+  .tile .tx { padding:9px 11px 11px; display:flex; flex-direction:column; flex:1; }
+  .tile .ttl { font-size:13.5px; margin:4px 0 2px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .tile.hero .ttl { font-size:17px; }
+  .tile .snip { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin:0 0 6px; }
+  .tile.hero .snip { -webkit-line-clamp:3; }
+  .tile .btns { margin-top:auto; display:flex; gap:6px; flex-wrap:wrap; }
+  @media (min-width:700px) { .grid { grid-template-columns:repeat(3,1fr); } }
+  .reader { position:fixed; inset:0; background:var(--paper); z-index:60; display:none; flex-direction:column; }
+  .reader.open { display:flex; }
+  .rbar { display:flex; gap:8px; align-items:center; padding:10px 12px; background:var(--ink); color:#f5efe6; }
+  .rbar .rsrc { font-size:12.5px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rback { background:#fff; color:var(--ink); border:none; padding:7px 13px; border-radius:8px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  .rscroll { overflow-y:auto; flex:1; -webkit-overflow-scrolling:touch; }
+  .rwrap { max-width:720px; margin:0 auto; padding:0 16px 46px; }
+  .rhero { width:100%; max-height:46vh; object-fit:cover; display:block; }
+  .rTitle { font-size:20px; font-weight:700; line-height:1.55; margin:16px 0 6px; }
+  .rbody p { font-size:15px; line-height:1.95; margin:0 0 13px; color:#292524; }
   .foot { text-align:center; font-size:11px; color:#a8a29e; padding: 14px; }
 </style>
 </head>
 <body>
 <header>
-  <h1>🖼️ Art Wire — အနုပညာ သတင်း</h1>
+  <h1>🖼️ Art Wire — အနုပညာ သတင်း <span style="font-size:11px;opacity:.55;font-weight:400">v3</span></h1>
   <p>နေ့စဉ် art သတင်း · အနုပညာရှင်/ပြပွဲ · ပြတိုက်/Art Fair · ဈေးကွက်/လေလံ · Market Reports · မြန်မာ/အရှေ့တောင်အာရှ — အချိန်နဲ့ တပြေးညီ (RSS)</p>
 </header>
 <div class="bar">
@@ -56,9 +80,34 @@
     <p class="small">PDF-OCR app မှာ သုံး တဲ့ key အတိုင်း ပဲ။ Key ကို ဖုန်း/ကွန်ပျူတာ ထဲမှာ ပဲ သိမ်း တယ် (localStorage) — ဘာသာပြန် ခေါ် တဲ့ အချိန် Google ဆီ ပဲ သွား တယ်။ Key မရှိ ရင် အခမဲ့ တိုက်ရိုက် ဘာသာပြန် ကို သုံး ပါ။</p>
     <input type="password" id="gemKey" placeholder="Gemini API key ထည့်ပါ">
     <div style="margin-top:8px;"><button class="act" id="saveKey">သိမ်း မယ်</button> <span class="small" id="keyState"></span></div>
+    <p class="small" style="margin-top:14px;">rss2json API key (မထည့် လည်း ရ) — "သတင်း မရ ပါ" ခဏခဏ ပေါ် ရင် rss2json.com မှာ အခမဲ့ key ယူ ထည့် ရင် limit ပို များ တယ်။ ဒီ key ကို လည်း ဖုန်း ထဲမှာ ပဲ သိမ်း တယ်။</p>
+    <input type="password" id="rssKey" placeholder="rss2json API key (optional)">
+    <div style="margin-top:8px;"><button class="act" id="saveRssKey">သိမ်း မယ်</button> <span class="small" id="rssKeyState"></span></div>
   </details>
 </div>
-<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Google News (Art Basel/Artsy/Artprice စသည် ရှာ ဖွေ) — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။</p>
+<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Artnet · The Art Newspaper · Artforum · ArtAsiaPacific · Juxtapoz · Hi-Fructose · StreetArtNews · Brooklyn Street Art · Colossal · Plural · Art Market Mag + Google News — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။ သတင်း အပြည့်: feed content / r.jina.ai မှတစ်ဆင့် app ထဲတင် ဖတ် နိုင် သည်။</p>
+<div id="reader" class="reader">
+  <div class="rbar">
+    <button class="rback" id="readerBack">← ပြန်</button>
+    <span class="rsrc" id="readerSrc"></span>
+    <span style="flex:1"></span>
+    <a class="mini" id="readerOrig" href="#" target="_blank" rel="noopener" style="text-decoration:none">မူရင်း ဖတ် →</a>
+  </div>
+  <div class="rscroll" id="readerScroll">
+    <img class="rhero" id="readerImg" style="display:none" alt="">
+    <div class="rwrap">
+      <div class="rTitle" id="readerTitle"></div>
+      <div><span class="src" id="readerSrcChip"></span><span class="when" id="readerWhen"></span></div>
+      <p class="small" id="readerStatus" style="margin-top:8px"></p>
+      <div style="margin:10px 0;">
+        <button class="mini" id="readerTrBtn">🇲🇲 စာကိုယ် ဘာသာပြန်</button>
+        <button class="mini" id="readerAiBtn">🤖 AI နဲ့ ပြန်</button>
+      </div>
+      <div class="trbox" id="readerTrBox"></div>
+      <div class="rbody" id="readerBody" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
 <div id="bootErr" style="display:none" class="err"></div>
 <script>
 window.addEventListener('error', function (e) { var d = document.getElementById('bootErr'); if (d) { d.style.display = 'block'; d.textContent = '⚠️ app error: ' + (e.message || 'unknown'); } });
@@ -69,20 +118,37 @@ const CATEGORIES = [
   { id: 'daily', label: '📰 နေ့စဉ် သတင်း', feeds: [
     { name: 'ARTnews', url: 'https://www.artnews.com/feed/' },
     { name: 'Hyperallergic', url: 'https://hyperallergic.com/feed/' },
-    { name: 'Google News', url: GN('contemporary art') } ] },
+    { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
+    { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
+    { name: 'Artforum', url: 'https://www.artforum.com/feed' },
+    { name: 'Colossal', url: 'https://www.thisiscolossal.com/feed/' } ] },
   { id: 'artists', label: '🎨 အနုပညာရှင် / ပြပွဲ', feeds: [
-    { name: 'Google News', url: GN('artist exhibition OR retrospective OR biennale OR "solo show" art') },
-    { name: 'Google News', url: GN('"street art" OR mural artist exhibition') } ] },
+    { name: 'Juxtapoz', url: 'https://www.juxtapoz.com/feed/' },
+    { name: 'Hi-Fructose', url: 'https://hifructose.com/feed/' },
+    { name: 'StreetArtNews', url: 'https://streetartnews.net/feed/' },
+    { name: 'Brooklyn Street Art', url: 'https://www.brooklynstreetart.com/feed/' },
+    { name: 'Google News', url: GN('site:e-flux.com') },
+    { name: 'Google News', url: GN('artist exhibition OR retrospective OR biennale OR "solo show" art') } ] },
   { id: 'fairs', label: '🏛️ ပြတိုက် / Art Fair', feeds: [
-    { name: 'Google News', url: GN('"art fair" OR "Art Basel" OR Frieze OR museum exhibition') },
-    { name: 'Google News', url: GN('"Art SG" OR "art fair" Asia museum') } ] },
+    { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
+    { name: 'ArtAsiaPacific', url: 'https://artasiapacific.com/feed' },
+    { name: 'Google News', url: GN('site:frieze.com') },
+    { name: 'Google News', url: GN('site:ocula.com') },
+    { name: 'Google News', url: GN('"art fair" OR "Art Basel" OR museum exhibition') } ] },
   { id: 'market', label: '💹 ဈေးကွက် / လေလံ', feeds: [
+    { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
+    { name: 'Art Market Mag', url: 'https://artmarketmag.com/feed/' },
+    { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
     { name: 'Google News', url: GN('art auction Sotheby\'s OR Christie\'s OR "art market"') },
     { name: 'Google News', url: GN('Basquiat OR "contemporary art" auction record price') } ] },
   { id: 'reports', label: '📊 Market Reports', feeds: [
+    { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
+    { name: 'Art Market Mag', url: 'https://artmarketmag.com/feed/' },
     { name: 'Google News', url: GN('"art market report" OR Artprice OR "Art Basel and UBS" OR Artsy market report') },
     { name: 'Google News', url: GN('Gen Z art collectors market trend') } ] },
   { id: 'sea', label: '🌏 မြန်မာ / အရှေ့တောင်အာရှ', feeds: [
+    { name: 'ArtAsiaPacific', url: 'https://artasiapacific.com/feed' },
+    { name: 'Plural Art Mag', url: 'https://pluralartmag.com/feed/' },
     { name: 'Google News', url: GN('Myanmar art OR "Southeast Asian art" OR Yangon art') },
     { name: 'Google News', url: GN('Thai art OR Vietnamese art OR "Singapore art" exhibition') } ] }
 ];
@@ -100,8 +166,11 @@ function relTime(t) {
 }
 
 // ---------------- fetching ----------------
-async function fetchFeed(feed) {
-  const api = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url);
+function firstImg(html) { const m = /<img[^>]+src\s*=\s*["']([^"']+)["']/i.exec(html || ''); return m ? m[1] : ''; }
+function goodThumb(u) { return u && !/(\/themes\/|placeholder|lazy|blank\.|spacer|1x1|pixel)/i.test(u) ? u : ''; }
+async function fetchFeedOnce(feed) {
+  const rkey = (localStorage.getItem('artwire_rss_key') || '').trim();
+  const api = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url) + (rkey ? '&api_key=' + encodeURIComponent(rkey) : '');
   const r = await fetch(api);
   if (!r.ok) throw new Error('feed HTTP ' + r.status);
   const j = await r.json();
@@ -111,21 +180,55 @@ async function fetchFeed(feed) {
     title: strip(it.title),
     link: it.link,
     date: new Date(it.pubDate).getTime(),
-    snip: strip(it.description).slice(0, 260)
+    snip: strip(it.description).slice(0, 260),
+    img: firstImg(it.content) || goodThumb(it.thumbnail) || (it.enclosure && it.enclosure.link) || firstImg(it.description) || '',
+    body: it.content || it.description || ''
   }));
+}
+async function fetchFeed(feed) {
+  try { return await fetchFeedOnce(feed); }
+  catch (e) { await new Promise(r => setTimeout(r, 1500)); return fetchFeedOnce(feed); }
+}
+const AW_CACHE_KEY = 'artwire_cache_v3';
+function awCacheGet(catId) {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(AW_CACHE_KEY) || '{}');
+    const e = all[catId];
+    if (e && Date.now() - e.t < 30 * 60 * 1000) return e.items;
+  } catch (err) {}
+  return null;
+}
+function awCacheSet(catId, items) {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(AW_CACHE_KEY) || '{}');
+    all[catId] = { t: Date.now(), items: items.slice(0, 15).map(it => ({ ...it, body: (it.body || '').slice(0, 4000) })) };
+    sessionStorage.setItem(AW_CACHE_KEY, JSON.stringify(all));
+  } catch (err) {}
 }
 async function loadCategory(catId, force) {
   if (state.cache[catId] && !force) { renderItems(catId); return; }
+  if (!force) {
+    const cached = awCacheGet(catId);
+    if (cached && cached.length) {
+      state.cache[catId] = cached;
+      $('updatedAt').textContent = 'သိမ်း ထား တဲ့ သတင်း (မိနစ် ၃၀ အတွင်း) — အသစ် လို ရင် 🔄 နှိပ် ပါ';
+      renderItems(catId);
+      return;
+    }
+  }
   const main = $('feedMain');
   main.innerHTML = '<p class="small"><span class="spin">⏳</span> သတင်း ဖတ် နေ တယ်…</p>';
   const cat = CATEGORIES.find(c => c.id === catId);
-  const results = await Promise.allSettled(cat.feeds.map(fetchFeed));
   let items = [];
-  results.forEach(r => { if (r.status === 'fulfilled') items = items.concat(r.value); });
+  for (const f of cat.feeds) {
+    try { items = items.concat(await fetchFeed(f)); } catch (e) { /* one bad feed must not sink the tab */ }
+    await new Promise(r => setTimeout(r, 200));
+  }
   const seen = new Set();
   items = items.filter(it => { const k = it.title.toLowerCase().slice(0, 60); if (seen.has(k) || !it.title) return false; seen.add(k); return true; });
   items.sort((a, b) => b.date - a.date);
   state.cache[catId] = items.slice(0, 30);
+  awCacheSet(catId, state.cache[catId]);
   $('updatedAt').textContent = 'နောက်ဆုံး ဖတ်: ' + new Date().toLocaleTimeString();
   if (!items.length) {
     main.innerHTML = '<div class="err">သတင်း မရ ပါ — feed လမ်းကြောင်း ခေတ္တ ပိတ်/နှုန်း ပြည့် နေနိုင် တယ်။ ခဏ နေ မှ 🔄 ပြန်ဖတ် နှိပ် ပါ။</div>';
@@ -135,16 +238,20 @@ async function loadCategory(catId, force) {
 }
 function renderItems(catId) {
   const items = state.cache[catId] || [];
-  $('feedMain').innerHTML = items.map((it, i) => `
-    <div class="card">
-      <span class="src">${esc(it.source)}</span><span class="when">${relTime(it.date)}</span>
-      <div class="ttl"><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)}</a></div>
-      ${it.snip ? `<div class="snip">${esc(it.snip)}</div>` : ''}
-      <button class="mini" onclick="quickTr('${catId}', ${i}, this)">🇲🇲 ဘာသာပြန်</button>
-      <button class="mini" onclick="aiTr('${catId}', ${i}, this)">🤖 AI နဲ့ ပြန်</button>
-      <a class="mini" style="text-decoration:none;display:inline-block" href="${esc(it.link)}" target="_blank" rel="noopener">မူရင်း ဖတ် →</a>
-      <div class="trbox" id="tr-${catId}-${i}"></div>
-    </div>`).join('');
+  $('feedMain').innerHTML = '<div class="grid">' + items.map((it, i) => `
+    <article class="tile${i === 0 ? ' hero' : ''}" onclick="openReader('${catId}', ${i})">
+      <div class="ph">${it.img ? `<img src="${esc(it.img)}" alt="" loading="lazy" onerror="this.parentNode.textContent='🖼️'">` : '🖼️'}</div>
+      <div class="tx">
+        <div><span class="src">${esc(it.source)}</span><span class="when">${relTime(it.date)}</span></div>
+        <div class="ttl">${esc(it.title)}</div>
+        ${it.snip ? `<div class="snip">${esc(it.snip)}</div>` : ''}
+        <div class="btns">
+          <button class="mini" onclick="event.stopPropagation(); quickTr('${catId}', ${i}, this)">🇲🇲 ဘာသာပြန်</button>
+          <button class="mini" onclick="event.stopPropagation(); aiTr('${catId}', ${i}, this)">🤖 AI နဲ့ ပြန်</button>
+        </div>
+        <div class="trbox" id="tr-${catId}-${i}"></div>
+      </div>
+    </article>`).join('') + '</div>';
 }
 
 // ---------------- translation ----------------
@@ -205,6 +312,110 @@ async function aiTr(catId, i, btn) {
   }
 }
 
+// ---------------- in-app reader ----------------
+let readerCtx = null;
+function parasFromText(t) {
+  return String(t || '').split(/\n\s*\n/).map(s => s.replace(/\s*\n\s*/g, ' ').trim()).filter(s => s.length > 1);
+}
+function cleanJina(t) {
+  let s = String(t || '');
+  const k = s.indexOf('Markdown Content:');
+  if (k >= 0) s = s.slice(k + 'Markdown Content:'.length);
+  s = s.replace(/!\[[^\]]*\]\([^)]*\)/g, ' ');
+  s = s.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
+  s = s.replace(/^#{1,6}\s*/gm, '');
+  s = s.replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1');
+  return s.trim();
+}
+function setReaderBody(paras, note) {
+  $('readerBody').innerHTML = paras.map(p => '<p>' + esc(p) + '</p>').join('');
+  if (note !== undefined) $('readerStatus').textContent = note;
+}
+async function openReader(catId, i) {
+  const it = state.cache[catId][i];
+  if (!it) return;
+  readerCtx = { item: it, paras: [] };
+  $('readerSrc').textContent = it.source;
+  $('readerOrig').href = it.link;
+  $('readerTitle').textContent = it.title;
+  $('readerSrcChip').textContent = it.source;
+  $('readerWhen').textContent = relTime(it.date);
+  const img = $('readerImg');
+  img.onerror = () => { img.style.display = 'none'; };
+  if (it.img) { img.src = it.img; img.style.display = 'block'; } else img.style.display = 'none';
+  const tb = $('readerTrBox'); tb.style.display = 'none'; tb.innerHTML = '';
+  $('reader').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  $('readerScroll').scrollTop = 0;
+  const feedParas = parasFromText(strip(it.body));
+  if (feedParas.join(' ').length > 700) {
+    readerCtx.paras = feedParas;
+    setReaderBody(feedParas, 'feed ထဲ ပါတဲ့ စာ အပြည့်');
+    return;
+  }
+  readerCtx.paras = feedParas;
+  setReaderBody(feedParas.length ? feedParas : (it.snip ? [it.snip] : []), '⏳ စာ အပြည့် ဆွဲယူ နေ တယ်…');
+  try {
+    const r = await fetch('https://r.jina.ai/' + it.link);
+    if (!r.ok) throw new Error('jina ' + r.status);
+    const ps = parasFromText(cleanJina(await r.text())).filter(p => p.length > 30);
+    if (ps.join(' ').length <= 500) throw new Error('short');
+    if (!readerCtx || readerCtx.item !== it) return;
+    readerCtx.paras = ps;
+    setReaderBody(ps, 'မူရင်း site မှ စာ အပြည့်');
+  } catch (e) {
+    if (readerCtx && readerCtx.item === it) setReaderBody(readerCtx.paras, '⚠️ စာ အပြည့် ဆွဲယူ မရ ပါ — အပေါ် က "မူရင်း ဖတ်" နဲ့ ဖွင့် ဖတ် ပါ');
+  }
+}
+function closeReader() {
+  $('reader').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function chunkText(t, n) {
+  const out = []; let s = String(t || '');
+  while (s.length > n) { let cut = s.lastIndexOf(' ', n); if (cut < n * 0.5) cut = n; out.push(s.slice(0, cut)); s = s.slice(cut).trim(); }
+  if (s) out.push(s);
+  return out;
+}
+async function readerQuickTr() {
+  const box = $('readerTrBox');
+  if (!readerCtx || !readerCtx.paras.length) { box.style.display = 'block'; box.innerHTML = '<span class="tag">ဘာသာပြန် စရာ စာ မရှိ သေး ပါ — စာ အပြည့် ရောက်တဲ့ ထိ စောင့် ပါ</span>'; return; }
+  box.style.display = 'block';
+  box.innerHTML = '<span class="tag">🇲🇲 စာကိုယ် ဘာသာပြန် နေ တယ်… (အပိုင်းလိုက်)</span>';
+  try {
+    const out = [];
+    for (const p of readerCtx.paras.slice(0, 14)) {
+      const parts = [];
+      for (const c of chunkText(p, 420).slice(0, 3)) parts.push(await gtxTranslate(c));
+      out.push(parts.join(' '));
+    }
+    box.innerHTML = '<span class="tag">🇲🇲 စာကိုယ် ဘာသာပြန် (အခမဲ့ တိုက်ရိုက်)</span><br>' + out.map(p => esc(p)).join('<br><br>');
+  } catch (e) {
+    box.innerHTML = '<span class="tag">⚠️ ဘာသာပြန် မရ ပါ — နောက် မှ ပြန် စမ်း ပါ</span>';
+  }
+}
+async function readerAiTr() {
+  const box = $('readerTrBox');
+  const key = (localStorage.getItem('artnews_gemini_key') || '').trim();
+  box.style.display = 'block';
+  if (!key) { box.innerHTML = '<span class="tag">🤖 Gemini key မရှိ သေး ပါ — အောက် က ⚙️ ဆက်တင် မှာ key ထည့် ပါ</span>'; return; }
+  if (!readerCtx || !readerCtx.paras.length) { box.innerHTML = '<span class="tag">ဘာသာပြန် စရာ စာ မရှိ သေး ပါ — စာ အပြည့် ရောက်တဲ့ ထိ စောင့် ပါ</span>'; return; }
+  box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် နေ တယ်…</span>';
+  try {
+    const prompt = 'Translate this art news article into clear, natural Burmese (မြန်မာ) as spoken by an art journalist. Keep artist names, artwork titles, gallery/museum names and numbers accurate. Return only the translation.\n\nTitle: ' + readerCtx.item.title + '\n\n' + readerCtx.paras.join('\n\n').slice(0, 6000);
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + encodeURIComponent(key), {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+    const out = j.candidates[0].content.parts.map(p => p.text || '').join('');
+    box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် (Gemini)</span><br>' + esc(out).replace(/\n/g, '<br>');
+  } catch (e) {
+    box.innerHTML = '<span class="tag">⚠️ AI ဘာသာပြန် မရ: ' + esc(e.message) + ' — key/quota စစ် ပါ</span>';
+  }
+}
+
 // ---------------- init ----------------
 const nav = $('tabNav');
 CATEGORIES.forEach(cat => {
@@ -220,11 +431,20 @@ CATEGORIES.forEach(cat => {
   nav.appendChild(b);
 });
 $('refreshBtn').onclick = () => loadCategory(state.tab, true);
+$('readerBack').onclick = closeReader;
+$('readerTrBtn').onclick = readerQuickTr;
+$('readerAiBtn').onclick = readerAiTr;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeReader(); });
 $('saveKey').onclick = () => {
   try { localStorage.setItem('artnews_gemini_key', $('gemKey').value.trim()); } catch (e) {}
   $('keyState').textContent = '✓ သိမ်း ပြီး';
 };
 try { const k = localStorage.getItem('artnews_gemini_key'); if (k) { $('gemKey').value = k; $('keyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+$('saveRssKey').onclick = () => {
+  try { localStorage.setItem('artwire_rss_key', $('rssKey').value.trim()); } catch (e) {}
+  $('rssKeyState').textContent = '✓ သိမ်း ပြီး';
+};
+try { const rk = localStorage.getItem('artwire_rss_key'); if (rk) { $('rssKey').value = rk; $('rssKeyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
 loadCategory(state.tab, false);
 </script>
 </body>
