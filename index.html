@@ -63,7 +63,7 @@
 </head>
 <body>
 <header>
-  <h1>🖼️ Art Wire — အနုပညာ သတင်း <span style="font-size:11px;opacity:.55;font-weight:400">v3</span></h1>
+  <h1>🖼️ Art Wire — အနုပညာ သတင်း <span style="font-size:11px;opacity:.55;font-weight:400">v3.2</span></h1>
   <p>နေ့စဉ် art သတင်း · အနုပညာရှင်/ပြပွဲ · ပြတိုက်/Art Fair · ဈေးကွက်/လေလံ · Market Reports · မြန်မာ/အရှေ့တောင်အာရှ — အချိန်နဲ့ တပြေးညီ (RSS)</p>
 </header>
 <div class="bar">
@@ -83,9 +83,12 @@
     <p class="small" style="margin-top:14px;">rss2json API key (မထည့် လည်း ရ) — "သတင်း မရ ပါ" ခဏခဏ ပေါ် ရင် rss2json.com မှာ အခမဲ့ key ယူ ထည့် ရင် limit ပို များ တယ်။ ဒီ key ကို လည်း ဖုန်း ထဲမှာ ပဲ သိမ်း တယ်။</p>
     <input type="password" id="rssKey" placeholder="rss2json API key (optional)">
     <div style="margin-top:8px;"><button class="act" id="saveRssKey">သိမ်း မယ်</button> <span class="small" id="rssKeyState"></span></div>
+    <p class="small" style="margin-top:14px;">r.jina.ai API key (မထည့် လည်း ရ) — "စာ အပြည့် ဆွဲယူ မရ" ခဏခဏ ပေါ် ရင် jina.ai မှာ အခမဲ့ key ယူ ထည့် ရင် စာကိုယ် ဆွဲယူ တာ ပို အောင် တယ်။ ဒီ key ကို လည်း ဖုန်း ထဲမှာ ပဲ သိမ်း တယ်။</p>
+    <input type="password" id="jinaKey" placeholder="Jina API key (optional)">
+    <div style="margin-top:8px;"><button class="act" id="saveJinaKey">သိမ်း မယ်</button> <span class="small" id="jinaKeyState"></span></div>
   </details>
 </div>
-<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Artnet · The Art Newspaper · Artforum · ArtAsiaPacific · Juxtapoz · Hi-Fructose · StreetArtNews · Brooklyn Street Art · Colossal · Plural · Art Market Mag + Google News — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။ သတင်း အပြည့်: feed content / r.jina.ai မှတစ်ဆင့် app ထဲတင် ဖတ် နိုင် သည်။</p>
+<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Artnet · The Art Newspaper · Artforum · ArtAsiaPacific · Juxtapoz · Hi-Fructose · StreetArtNews · Brooklyn Street Art · Colossal · Plural · Art Market Mag · Artsy + Google News — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။ သတင်း အပြည့်: feed content / r.jina.ai မှတစ်ဆင့် app ထဲတင် ဖတ် နိုင် သည် — ဆွဲမရ လျှင် Google Translate မှ မူရင်း အပြည့် ဘာသာပြန် ဖတ် နိုင် သည်။</p>
 <div id="reader" class="reader">
   <div class="rbar">
     <button class="rback" id="readerBack">← ပြန်</button>
@@ -102,6 +105,7 @@
       <div style="margin:10px 0;">
         <button class="mini" id="readerTrBtn">🇲🇲 စာကိုယ် ဘာသာပြန်</button>
         <button class="mini" id="readerAiBtn">🤖 AI နဲ့ ပြန်</button>
+        <a class="mini" id="readerGTr" href="#" target="_blank" rel="noopener" style="text-decoration:none">🇲🇲 မူရင်း အပြည့် (ဘာသာပြန်)</a>
       </div>
       <div class="trbox" id="readerTrBox"></div>
       <div class="rbody" id="readerBody" style="margin-top:12px"></div>
@@ -121,7 +125,8 @@ const CATEGORIES = [
     { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
     { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
     { name: 'Artforum', url: 'https://www.artforum.com/feed' },
-    { name: 'Colossal', url: 'https://www.thisiscolossal.com/feed/' } ] },
+    { name: 'Colossal', url: 'https://www.thisiscolossal.com/feed/' },
+    { name: 'Artsy', url: 'https://www.artsy.net/rss/news' } ] },
   { id: 'artists', label: '🎨 အနုပညာရှင် / ပြပွဲ', feeds: [
     { name: 'Juxtapoz', url: 'https://www.juxtapoz.com/feed/' },
     { name: 'Hi-Fructose', url: 'https://hifructose.com/feed/' },
@@ -139,6 +144,7 @@ const CATEGORIES = [
     { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
     { name: 'Art Market Mag', url: 'https://artmarketmag.com/feed/' },
     { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
+    { name: 'Artsy', url: 'https://www.artsy.net/rss/news' },
     { name: 'Google News', url: GN('art auction Sotheby\'s OR Christie\'s OR "art market"') },
     { name: 'Google News', url: GN('Basquiat OR "contemporary art" auction record price') } ] },
   { id: 'reports', label: '📊 Market Reports', feeds: [
@@ -337,6 +343,7 @@ async function openReader(catId, i) {
   readerCtx = { item: it, paras: [] };
   $('readerSrc').textContent = it.source;
   $('readerOrig').href = it.link;
+  $('readerGTr').href = gTranslateUrl(it.link);
   $('readerTitle').textContent = it.title;
   $('readerSrcChip').textContent = it.source;
   $('readerWhen').textContent = relTime(it.date);
@@ -356,7 +363,8 @@ async function openReader(catId, i) {
   readerCtx.paras = feedParas;
   setReaderBody(feedParas.length ? feedParas : (it.snip ? [it.snip] : []), '⏳ စာ အပြည့် ဆွဲယူ နေ တယ်…');
   try {
-    const r = await fetch('https://r.jina.ai/' + it.link);
+    const jk = (localStorage.getItem('artnews_jina_key') || '').trim();
+    const r = await fetch('https://r.jina.ai/' + it.link, jk ? { headers: { 'Authorization': 'Bearer ' + jk } } : undefined);
     if (!r.ok) throw new Error('jina ' + r.status);
     const ps = parasFromText(cleanJina(await r.text())).filter(p => p.length > 30);
     if (ps.join(' ').length <= 500) throw new Error('short');
@@ -364,12 +372,18 @@ async function openReader(catId, i) {
     readerCtx.paras = ps;
     setReaderBody(ps, 'မူရင်း site မှ စာ အပြည့်');
   } catch (e) {
-    if (readerCtx && readerCtx.item === it) setReaderBody(readerCtx.paras, '⚠️ စာ အပြည့် ဆွဲယူ မရ ပါ — အပေါ် က "မူရင်း ဖတ်" နဲ့ ဖွင့် ဖတ် ပါ');
+    if (readerCtx && readerCtx.item === it) setReaderBody(readerCtx.paras, '⚠️ စာ အပြည့် ဆွဲယူ မရ ပါ — "🇲🇲 မူရင်း အပြည့် (ဘာသာပြန်)" ခလုတ် နဲ့ ဆောင်းပါး တစ်ခုလုံး ကို မြန်မာ လို ဖတ် နိုင် ပါ တယ်');
   }
 }
 function closeReader() {
   $('reader').classList.remove('open');
   document.body.style.overflow = '';
+}
+function gTranslateUrl(u) {
+  try {
+    const x = new URL(u);
+    return 'https://' + x.hostname.replace(/\./g, '-') + '.translate.goog' + x.pathname + (x.search || '') + (x.search ? '&' : '?') + '_x_tr_sl=auto&_x_tr_tl=my&_x_tr_hl=en';
+  } catch (e) { return u; }
 }
 function chunkText(t, n) {
   const out = []; let s = String(t || '');
@@ -445,6 +459,11 @@ $('saveRssKey').onclick = () => {
   $('rssKeyState').textContent = '✓ သိမ်း ပြီး';
 };
 try { const rk = localStorage.getItem('artwire_rss_key'); if (rk) { $('rssKey').value = rk; $('rssKeyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+$('saveJinaKey').onclick = () => {
+  try { localStorage.setItem('artnews_jina_key', $('jinaKey').value.trim()); } catch (e) {}
+  $('jinaKeyState').textContent = '✓ သိမ်း ပြီး';
+};
+try { const jk0 = localStorage.getItem('artnews_jina_key'); if (jk0) { $('jinaKey').value = jk0; $('jinaKeyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
 loadCategory(state.tab, false);
 </script>
 </body>
