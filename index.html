@@ -3,98 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Wire — အနုပညာ သတင်း</title>
+<title>Art Wire</title>
 <style>
-  :root { --ink:#1c1917; --paper:#faf7f2; --accent:#9a3412; --accent2:#4338ca; --line:#e7e0d4; }
+  :root { --ink:#1a1712; --verm:#a63d2d; --paper:#faf5ea; --line:#e0d7c3; --gray:#7a7263; --soft:#f3ecdc; --card:#fffdf6; }
   * { box-sizing: border-box; }
   body { margin:0; font-family: "Noto Sans Myanmar", "Pyidaungsu", system-ui, sans-serif; background: var(--paper); color: var(--ink); }
-  header { background: var(--ink); color:#f5efe6; padding: 16px; }
-  header h1 { margin:0; font-size: 20px; letter-spacing:.3px; }
-  header p { margin:4px 0 0; font-size:12px; opacity:.75; }
-  .bar { display:flex; gap:8px; align-items:center; padding:10px 14px; background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; flex-wrap:wrap; }
-  nav.tabs { display:flex; gap:6px; padding:10px 14px 0; flex-wrap:wrap; }
-  button.tab { border:1px solid var(--line); background:#fff; padding:7px 12px; border-radius:999px; font-family:inherit; font-size:13px; cursor:pointer; }
-  button.tab.on { background: var(--accent); border-color: var(--accent); color:#fff; font-weight:700; }
-  button.act { background: var(--accent2); color:#fff; border:none; padding:7px 14px; border-radius:8px; font-family:inherit; font-size:12.5px; cursor:pointer; }
-  button.mini { border:1px solid var(--line); background:#fff; padding:4px 10px; border-radius:999px; font-family:inherit; font-size:11.5px; cursor:pointer; }
-  button.mini:hover { border-color: var(--accent); color: var(--accent); }
-  main { padding: 12px 14px 30px; max-width: 860px; margin: 0 auto; }
-  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
-  .src { display:inline-block; font-size:10.5px; font-weight:700; color:var(--accent); background:#fdf0e7; border-radius:6px; padding:2px 7px; margin-right:6px; }
-  .when { font-size:11px; color:#78716c; }
+  header { padding: 14px 14px 4px; background: var(--paper); max-width: 860px; margin: 0 auto; }
+  h1.mast { margin:0; background: var(--verm); color:#faf3e3; text-align:center; font-size: 32px; font-weight: 900; letter-spacing: 1.5px; padding: 20px 12px; }
+  h1.mast .ver { font-size: 11px; font-weight: 400; opacity:.6; letter-spacing: 0; }
+  .bar { display:flex; gap:8px; align-items:center; padding:10px 14px; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; flex-wrap:wrap; }
+  nav.tabs { display:flex; flex-wrap:wrap; gap:0; width:calc(100% - 28px); max-width:832px; margin:10px auto 0; padding:0; border:1px solid var(--line); background:var(--card); }
+  button.tab { flex:1 1 25%; text-align:center; border:none; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:transparent; padding:10px 4px; border-radius:0; font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--ink); }
+  button.tab.on { background: var(--verm); border-color: var(--verm); color:#faf3e3; font-weight:800; }
+  button.act { background: var(--verm); color:#faf3e3; border:1px solid var(--verm); padding:7px 14px; border-radius:2px; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
+  button.mini { border:1px solid #cfc7b2; background:var(--card); padding:4px 10px; border-radius:2px; font-family:inherit; font-size:11.5px; cursor:pointer; color:var(--ink); }
+  button.mini:hover { border-color: var(--verm); color: var(--verm); }
+  main { padding: 6px 14px 30px; max-width: 860px; margin: 0 auto; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:2px; padding:12px 14px; margin-bottom:10px; }
+  .src { display:inline-block; font-size:10.5px; font-weight:700; color:#5c5546; background:var(--soft); border-radius:2px; padding:2px 7px; margin-right:6px; letter-spacing:.3px; }
+  .when { font-size:11px; color:var(--gray); }
   .ttl { font-size:15.5px; font-weight:700; margin:6px 0 4px; line-height:1.5; }
   .ttl a { color: var(--ink); text-decoration:none; }
-  .ttl a:hover { color: var(--accent); }
-  .snip { font-size:12.5px; color:#44403c; line-height:1.7; margin:2px 0 8px; }
-  .trbox { background:#f5f3ff; border:1px solid #ddd6fe; border-radius:10px; padding:9px 11px; font-size:13px; line-height:1.8; margin-top:8px; display:none; }
-  .trbox .tag { font-size:10.5px; font-weight:700; color: var(--accent2); }
-  .small { font-size:11.5px; color:#78716c; }
-  .err { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; border-radius:10px; padding:10px 12px; font-size:12.5px; }
-  input[type=text], input[type=password] { font-family:inherit; font-size:13px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; width:100%; }
-  details summary { cursor:pointer; font-size:12.5px; color: var(--accent2); font-weight:700; }
-  .spin { display:inline-block; animation: sp 1s linear infinite; }
-  @keyframes sp { to { transform: rotate(360deg); } }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .tile { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column; }
-  .tile:active { opacity:.86; }
-  .tile .ph { aspect-ratio:4/3; background:linear-gradient(135deg,#ece5d8,#d9cdb6); display:flex; align-items:center; justify-content:center; font-size:30px; color:#b8ab94; overflow:hidden; }
-  .tile .ph img { width:100%; height:100%; object-fit:cover; display:block; }
-  .tile.hero { grid-column:1 / -1; }
-  .tile.hero .ph { aspect-ratio:16/9; font-size:46px; }
-  .tile .tx { padding:9px 11px 11px; display:flex; flex-direction:column; flex:1; }
-  .tile .ttl { font-size:13.5px; margin:4px 0 2px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-  .tile.hero .ttl { font-size:17px; }
-  .tile .snip { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin:0 0 6px; }
+  .snip { font-size:12.5px; color:#55524d; line-height:1.7; margin:2px 0 8px; }
+  .trbox { background:#f6f1e2; border:1px solid var(--line); border-radius:2px; padding:9px 11px; font-size:13px; line-height:1.8; margin-top:8px; display:none; }
+  .trbox .tag { font-size:10.5px; font-weight:700; color: var(--verm); }
+  .small { font-size:11.5px; color:var(--gray); }
+  .err { background:#f6f1e2; border:1px solid #d8cfb6; color:#4a4436; border-radius:2px; padding:10px 12px; font-size:12.5px; }
+  input[type=text], input[type=password] { font-family:inherit; font-size:13px; padding:7px 9px; border:1px solid var(--line); border-radius:2px; width:100%; background:#fffef9; }
+  details summary { cursor:pointer; font-size:12.5px; color: var(--ink); font-weight:700; }
+  .grid { display:block; }
+  .tile { background:transparent; border:none; border-bottom:1px solid var(--line); border-radius:0; overflow:visible; cursor:pointer; display:flex; flex-direction:row; gap:12px; padding:14px 2px; transition: background .15s ease; }
+  .tile:hover { background:#f6f0df; }
+  .tile:active { opacity:.8; }
+  .tile .ph { width:92px; height:92px; flex:0 0 92px; aspect-ratio:auto; background:#ece4cf; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; letter-spacing:1px; color:#b3a888; overflow:hidden; }
+  .tile .ph img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1); }
+  .tile.hero { flex-direction:column; gap:10px; padding-top:10px; }
+  .tile.hero .ph { width:100%; height:auto; aspect-ratio:16/9; flex:none; font-size:13px; }
+  .tile .tx { padding:0; display:flex; flex-direction:column; flex:1; min-width:0; }
+  .tile .ttl { font-size:14.5px; margin:3px 0 2px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .tile.hero .ttl { font-size:19px; }
+  .tile .snip { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin:0 0 8px; }
   .tile.hero .snip { -webkit-line-clamp:3; }
   .tile .btns { margin-top:auto; display:flex; gap:6px; flex-wrap:wrap; }
-  @media (min-width:700px) { .grid { grid-template-columns:repeat(3,1fr); } }
-  .reader { position:fixed; inset:0; background:var(--paper); z-index:60; display:none; flex-direction:column; }
-  .reader.open { display:flex; }
-  .rbar { display:flex; gap:8px; align-items:center; padding:10px 12px; background:var(--ink); color:#f5efe6; }
-  .rbar .rsrc { font-size:12.5px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .rback { background:#fff; color:var(--ink); border:none; padding:7px 13px; border-radius:8px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  .reader { position:fixed; inset:0; background:var(--paper); z-index:60; display:flex; flex-direction:column; visibility:hidden; opacity:0; transform:translateY(16px); transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s; }
+  .reader.open { visibility:visible; opacity:1; transform:translateY(0); transition: opacity .3s ease, transform .3s ease; }
+  .rbar { display:flex; gap:8px; align-items:center; padding:10px 12px; background:var(--card); color:var(--ink); border-bottom:1px solid var(--line); }
+  .rbar .rsrc { font-size:12.5px; opacity:.7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rback { background:var(--card); color:var(--ink); border:1px solid #cfc7b2; padding:7px 13px; border-radius:2px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
   .rscroll { overflow-y:auto; flex:1; -webkit-overflow-scrolling:touch; }
   .rwrap { max-width:720px; margin:0 auto; padding:0 16px 46px; }
   .rhero { width:100%; max-height:46vh; object-fit:cover; display:block; }
-  .rTitle { font-size:20px; font-weight:700; line-height:1.55; margin:16px 0 6px; }
-  .rbody p { font-size:15px; line-height:1.95; margin:0 0 13px; color:#292524; }
-  .foot { text-align:center; font-size:11px; color:#a8a29e; padding: 14px; }
+  .rTitle { font-size:21px; font-weight:800; line-height:1.55; margin:16px 0 6px; }
+  .rbody p { font-size:15px; line-height:1.95; margin:0 0 13px; color:#26241f; }
 </style>
 </head>
 <body>
 <header>
-  <h1>🖼️ Art Wire — အနုပညာ သတင်း <span style="font-size:11px;opacity:.55;font-weight:400">v3.2</span></h1>
-  <p>နေ့စဉ် art သတင်း · အနုပညာရှင်/ပြပွဲ · ပြတိုက်/Art Fair · ဈေးကွက်/လေလံ · Market Reports · မြန်မာ/အရှေ့တောင်အာရှ — အချိန်နဲ့ တပြေးညီ (RSS)</p>
+  <h1 class="mast">Art Wire <span class="ver">v3.5</span></h1>
 </header>
 <div class="bar">
-  <button class="act" id="refreshBtn">🔄 ပြန်ဖတ်</button>
+  <button class="act" id="refreshBtn">Recents</button>
   <span class="small" id="updatedAt">—</span>
-  <span style="flex:1"></span>
-  <span class="small">ဘာသာပြန်: ခလုတ် တစ်ချက် = အခမဲ့ တိုက်ရိုက် · 🤖 = Gemini key ရှိ ရင် အရည်အသွေး မြင့်</span>
 </div>
 <nav class="tabs" id="tabNav"></nav>
-<main id="feedMain"><p class="small">⏳ သတင်း ဖတ် နေ တယ်…</p></main>
+<main id="feedMain"><p class="small">Loading news…</p></main>
 <div style="max-width:860px;margin:0 auto;padding:0 14px;">
   <details class="card">
-    <summary>⚙️ ဆက်တင် — Gemini API Key (AI ဘာသာပြန် အတွက်၊ မထည့် လည်း ရ)</summary>
-    <p class="small">PDF-OCR app မှာ သုံး တဲ့ key အတိုင်း ပဲ။ Key ကို ဖုန်း/ကွန်ပျူတာ ထဲမှာ ပဲ သိမ်း တယ် (localStorage) — ဘာသာပြန် ခေါ် တဲ့ အချိန် Google ဆီ ပဲ သွား တယ်။ Key မရှိ ရင် အခမဲ့ တိုက်ရိုက် ဘာသာပြန် ကို သုံး ပါ။</p>
-    <input type="password" id="gemKey" placeholder="Gemini API key ထည့်ပါ">
-    <div style="margin-top:8px;"><button class="act" id="saveKey">သိမ်း မယ်</button> <span class="small" id="keyState"></span></div>
-    <p class="small" style="margin-top:14px;">rss2json API key (မထည့် လည်း ရ) — "သတင်း မရ ပါ" ခဏခဏ ပေါ် ရင် rss2json.com မှာ အခမဲ့ key ယူ ထည့် ရင် limit ပို များ တယ်။ ဒီ key ကို လည်း ဖုန်း ထဲမှာ ပဲ သိမ်း တယ်။</p>
+    <summary>Settings — How it works &amp; API Keys</summary>
+    <p class="small"><b>How it works.</b> Art Wire collects headlines from art publications — ARTnews, Hyperallergic, Artnet, The Art Newspaper, Artforum, ArtAsiaPacific, Juxtapoz, Hi-Fructose, StreetArtNews, Brooklyn Street Art, Colossal, Plural, Art Market Mag, Artsy — plus Google News, via RSS (through rss2json). Tap any story to read it inside the app; the full text comes from the feed itself or r.jina.ai. If the full text cannot be fetched, <b>Original (Full, Translated)</b> opens the complete article in Burmese through Google Translate.</p>
+    <p class="small"><b>Translate</b> is a free direct translation (Google Translate, MyMemory as fallback). <b>AI Translate</b> uses your own Gemini key for higher quality. <b>Save</b> keeps an article under the Saved tab — saved articles are stored only on this device (localStorage) and survive app updates.</p>
+    <p class="small" style="margin-top:14px;">Gemini API key (optional — for AI Translate). The same key as the PDF-OCR app. Stored only on this device; sent only to Google when translating.</p>
+    <input type="password" id="gemKey" placeholder="Gemini API key">
+    <div style="margin-top:8px;"><button class="act" id="saveKey">Save</button> <span class="small" id="keyState"></span></div>
+    <p class="small" style="margin-top:14px;">rss2json API key (optional) — if "No news right now" appears often, a free key from rss2json.com raises the limit. Stored only on this device.</p>
     <input type="password" id="rssKey" placeholder="rss2json API key (optional)">
-    <div style="margin-top:8px;"><button class="act" id="saveRssKey">သိမ်း မယ်</button> <span class="small" id="rssKeyState"></span></div>
-    <p class="small" style="margin-top:14px;">r.jina.ai API key (မထည့် လည်း ရ) — "စာ အပြည့် ဆွဲယူ မရ" ခဏခဏ ပေါ် ရင် jina.ai မှာ အခမဲ့ key ယူ ထည့် ရင် စာကိုယ် ဆွဲယူ တာ ပို အောင် တယ်။ ဒီ key ကို လည်း ဖုန်း ထဲမှာ ပဲ သိမ်း တယ်။</p>
+    <div style="margin-top:8px;"><button class="act" id="saveRssKey">Save</button> <span class="small" id="rssKeyState"></span></div>
+    <p class="small" style="margin-top:14px;">r.jina.ai API key (optional) — if the full text often fails to load, a free key from jina.ai improves fetching. Stored only on this device.</p>
     <input type="password" id="jinaKey" placeholder="Jina API key (optional)">
-    <div style="margin-top:8px;"><button class="act" id="saveJinaKey">သိမ်း မယ်</button> <span class="small" id="jinaKeyState"></span></div>
+    <div style="margin-top:8px;"><button class="act" id="saveJinaKey">Save</button> <span class="small" id="jinaKeyState"></span></div>
   </details>
 </div>
-<p class="foot">သတင်း မူရင်း: ARTnews · Hyperallergic · Artnet · The Art Newspaper · Artforum · ArtAsiaPacific · Juxtapoz · Hi-Fructose · StreetArtNews · Brooklyn Street Art · Colossal · Plural · Art Market Mag · Artsy + Google News — rss2json မှတစ်ဆင့် ဖတ်သည်။ ဘာသာပြန်: Google Translate (အခမဲ့) / MyMemory (အရန်) / Gemini (key ရှိ လျှင်)။ သတင်း အပြည့်: feed content / r.jina.ai မှတစ်ဆင့် app ထဲတင် ဖတ် နိုင် သည် — ဆွဲမရ လျှင် Google Translate မှ မူရင်း အပြည့် ဘာသာပြန် ဖတ် နိုင် သည်။</p>
 <div id="reader" class="reader">
   <div class="rbar">
-    <button class="rback" id="readerBack">← ပြန်</button>
+    <button class="rback" id="readerBack">← Back</button>
     <span class="rsrc" id="readerSrc"></span>
     <span style="flex:1"></span>
-    <a class="mini" id="readerOrig" href="#" target="_blank" rel="noopener" style="text-decoration:none">မူရင်း ဖတ် →</a>
+    <a class="mini" id="readerOrig" href="#" target="_blank" rel="noopener" style="text-decoration:none">Original →</a>
   </div>
   <div class="rscroll" id="readerScroll">
     <img class="rhero" id="readerImg" style="display:none" alt="">
@@ -103,9 +97,10 @@
       <div><span class="src" id="readerSrcChip"></span><span class="when" id="readerWhen"></span></div>
       <p class="small" id="readerStatus" style="margin-top:8px"></p>
       <div style="margin:10px 0;">
-        <button class="mini" id="readerTrBtn">🇲🇲 စာကိုယ် ဘာသာပြန်</button>
-        <button class="mini" id="readerAiBtn">🤖 AI နဲ့ ပြန်</button>
-        <a class="mini" id="readerGTr" href="#" target="_blank" rel="noopener" style="text-decoration:none">🇲🇲 မူရင်း အပြည့် (ဘာသာပြန်)</a>
+        <button class="mini" id="readerTrBtn">Translate</button>
+        <button class="mini" id="readerAiBtn">AI Translate</button>
+        <button class="mini" id="readerBmBtn" onclick="toggleReaderBm()">Save</button>
+        <a class="mini" id="readerGTr" href="#" target="_blank" rel="noopener" style="text-decoration:none">Original (Full, Translated)</a>
       </div>
       <div class="trbox" id="readerTrBox"></div>
       <div class="rbody" id="readerBody" style="margin-top:12px"></div>
@@ -114,12 +109,12 @@
 </div>
 <div id="bootErr" style="display:none" class="err"></div>
 <script>
-window.addEventListener('error', function (e) { var d = document.getElementById('bootErr'); if (d) { d.style.display = 'block'; d.textContent = '⚠️ app error: ' + (e.message || 'unknown'); } });
+window.addEventListener('error', function (e) { var d = document.getElementById('bootErr'); if (d) { d.style.display = 'block'; d.textContent = 'App error: ' + (e.message || 'unknown'); } });
 
 // ---------------- feeds & categories ----------------
 const GN = (q) => 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
 const CATEGORIES = [
-  { id: 'daily', label: '📰 နေ့စဉ် သတင်း', feeds: [
+  { id: 'daily', label: 'Daily News', feeds: [
     { name: 'ARTnews', url: 'https://www.artnews.com/feed/' },
     { name: 'Hyperallergic', url: 'https://hyperallergic.com/feed/' },
     { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
@@ -127,32 +122,32 @@ const CATEGORIES = [
     { name: 'Artforum', url: 'https://www.artforum.com/feed' },
     { name: 'Colossal', url: 'https://www.thisiscolossal.com/feed/' },
     { name: 'Artsy', url: 'https://www.artsy.net/rss/news' } ] },
-  { id: 'artists', label: '🎨 အနုပညာရှင် / ပြပွဲ', feeds: [
+  { id: 'artists', label: 'Exhibitions', feeds: [
     { name: 'Juxtapoz', url: 'https://www.juxtapoz.com/feed/' },
     { name: 'Hi-Fructose', url: 'https://hifructose.com/feed/' },
     { name: 'StreetArtNews', url: 'https://streetartnews.net/feed/' },
     { name: 'Brooklyn Street Art', url: 'https://www.brooklynstreetart.com/feed/' },
     { name: 'Google News', url: GN('site:e-flux.com') },
     { name: 'Google News', url: GN('artist exhibition OR retrospective OR biennale OR "solo show" art') } ] },
-  { id: 'fairs', label: '🏛️ ပြတိုက် / Art Fair', feeds: [
+  { id: 'fairs', label: 'Museum/ Art Fair', feeds: [
     { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
     { name: 'ArtAsiaPacific', url: 'https://artasiapacific.com/feed' },
     { name: 'Google News', url: GN('site:frieze.com') },
     { name: 'Google News', url: GN('site:ocula.com') },
     { name: 'Google News', url: GN('"art fair" OR "Art Basel" OR museum exhibition') } ] },
-  { id: 'market', label: '💹 ဈေးကွက် / လေလံ', feeds: [
+  { id: 'market', label: 'Market/ Auction', feeds: [
     { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
     { name: 'Art Market Mag', url: 'https://artmarketmag.com/feed/' },
     { name: 'The Art Newspaper', url: 'https://www.theartnewspaper.com/rss.xml' },
     { name: 'Artsy', url: 'https://www.artsy.net/rss/news' },
     { name: 'Google News', url: GN('art auction Sotheby\'s OR Christie\'s OR "art market"') },
     { name: 'Google News', url: GN('Basquiat OR "contemporary art" auction record price') } ] },
-  { id: 'reports', label: '📊 Market Reports', feeds: [
+  { id: 'reports', label: 'Market Reports', feeds: [
     { name: 'Artnet News', url: 'https://news.artnet.com/feed' },
     { name: 'Art Market Mag', url: 'https://artmarketmag.com/feed/' },
     { name: 'Google News', url: GN('"art market report" OR Artprice OR "Art Basel and UBS" OR Artsy market report') },
     { name: 'Google News', url: GN('Gen Z art collectors market trend') } ] },
-  { id: 'sea', label: '🌏 မြန်မာ / အရှေ့တောင်အာရှ', feeds: [
+  { id: 'sea', label: 'Asian Region', feeds: [
     { name: 'ArtAsiaPacific', url: 'https://artasiapacific.com/feed' },
     { name: 'Plural Art Mag', url: 'https://pluralartmag.com/feed/' },
     { name: 'Google News', url: GN('Myanmar art OR "Southeast Asian art" OR Yangon art') },
@@ -166,9 +161,9 @@ function relTime(t) {
   const ms = Date.now() - t;
   if (isNaN(ms)) return '';
   const h = Math.floor(ms / 3600000), d = Math.floor(h / 24);
-  if (d >= 1) return d + ' ရက် အလို';
-  if (h >= 1) return h + ' နာရီ အလို';
-  return 'ခုနတင်';
+  if (d >= 1) return d + 'd ago';
+  if (h >= 1) return h + 'h ago';
+  return 'just now';
 }
 
 // ---------------- fetching ----------------
@@ -212,18 +207,19 @@ function awCacheSet(catId, items) {
   } catch (err) {}
 }
 async function loadCategory(catId, force) {
+  if (catId === 'saved') { renderSaved(); return; }
   if (state.cache[catId] && !force) { renderItems(catId); return; }
   if (!force) {
     const cached = awCacheGet(catId);
     if (cached && cached.length) {
       state.cache[catId] = cached;
-      $('updatedAt').textContent = 'သိမ်း ထား တဲ့ သတင်း (မိနစ် ၃၀ အတွင်း) — အသစ် လို ရင် 🔄 နှိပ် ပါ';
+      $('updatedAt').textContent = 'Cached within the last 30 min — tap Recents for the latest';
       renderItems(catId);
       return;
     }
   }
   const main = $('feedMain');
-  main.innerHTML = '<p class="small"><span class="spin">⏳</span> သတင်း ဖတ် နေ တယ်…</p>';
+  main.innerHTML = '<p class="small">Loading news…</p>';
   const cat = CATEGORIES.find(c => c.id === catId);
   let items = [];
   for (const f of cat.feeds) {
@@ -235,9 +231,9 @@ async function loadCategory(catId, force) {
   items.sort((a, b) => b.date - a.date);
   state.cache[catId] = items.slice(0, 30);
   awCacheSet(catId, state.cache[catId]);
-  $('updatedAt').textContent = 'နောက်ဆုံး ဖတ်: ' + new Date().toLocaleTimeString();
+  $('updatedAt').textContent = 'Updated ' + new Date().toLocaleTimeString();
   if (!items.length) {
-    main.innerHTML = '<div class="err">သတင်း မရ ပါ — feed လမ်းကြောင်း ခေတ္တ ပိတ်/နှုန်း ပြည့် နေနိုင် တယ်။ ခဏ နေ မှ 🔄 ပြန်ဖတ် နှိပ် ပါ။</div>';
+    main.innerHTML = '<div class="err">No news right now — a feed route may be temporarily blocked or over its limit. Wait a moment, then tap Recents.</div>';
     return;
   }
   renderItems(catId);
@@ -246,14 +242,15 @@ function renderItems(catId) {
   const items = state.cache[catId] || [];
   $('feedMain').innerHTML = '<div class="grid">' + items.map((it, i) => `
     <article class="tile${i === 0 ? ' hero' : ''}" onclick="openReader('${catId}', ${i})">
-      <div class="ph">${it.img ? `<img src="${esc(it.img)}" alt="" loading="lazy" onerror="this.parentNode.textContent='🖼️'">` : '🖼️'}</div>
+      <div class="ph">${it.img ? `<img src="${esc(it.img)}" alt="" loading="lazy" onerror="this.parentNode.textContent='Art Wire'">` : 'Art Wire'}</div>
       <div class="tx">
         <div><span class="src">${esc(it.source)}</span><span class="when">${relTime(it.date)}</span></div>
         <div class="ttl">${esc(it.title)}</div>
         ${it.snip ? `<div class="snip">${esc(it.snip)}</div>` : ''}
         <div class="btns">
-          <button class="mini" onclick="event.stopPropagation(); quickTr('${catId}', ${i}, this)">🇲🇲 ဘာသာပြန်</button>
-          <button class="mini" onclick="event.stopPropagation(); aiTr('${catId}', ${i}, this)">🤖 AI နဲ့ ပြန်</button>
+          <button class="mini" onclick="event.stopPropagation(); quickTr('${catId}', ${i}, this)">Translate</button>
+          <button class="mini" onclick="event.stopPropagation(); aiTr('${catId}', ${i}, this)">AI Translate</button>
+          <button class="mini" id="bm-${catId}-${i}" onclick="event.stopPropagation(); toggleBookmark('${catId}', ${i})">${isBookmarked(it.link) ? 'Saved' : 'Save'}</button>
         </div>
         <div class="trbox" id="tr-${catId}-${i}"></div>
       </div>
@@ -279,17 +276,17 @@ async function quickTr(catId, i, btn) {
   const it = state.cache[catId][i];
   const box = $('tr-' + catId + '-' + i);
   box.style.display = 'block';
-  box.innerHTML = '<span class="tag">ဘာသာပြန် နေ တယ်…</span>';
+  box.innerHTML = '<span class="tag">Translating…</span>';
   const text = it.title + (it.snip ? ' — ' + it.snip : '');
   try {
     const out = await gtxTranslate(text);
-    box.innerHTML = '<span class="tag">🇲🇲 ဘာသာပြန် (အခမဲ့ တိုက်ရိုက်)</span><br>' + esc(out);
+    box.innerHTML = '<span class="tag">Translation (free direct)</span><br>' + esc(out);
   } catch (e) {
     try {
       const out2 = await myMemoryTranslate(text);
-      box.innerHTML = '<span class="tag">🇲🇲 ဘာသာပြန် (MyMemory)</span><br>' + esc(out2);
+      box.innerHTML = '<span class="tag">Translation (MyMemory)</span><br>' + esc(out2);
     } catch (e2) {
-      box.innerHTML = '<span class="tag">⚠️ ဘာသာပြန် မရ ပါ — နောက် မှ ပြန် စမ်း ပါ (သို့) 🤖 AI နဲ့ စမ်း ပါ</span>';
+      box.innerHTML = '<span class="tag">Translation failed — try again later, or use AI Translate</span>';
     }
   }
 }
@@ -299,10 +296,10 @@ async function aiTr(catId, i, btn) {
   box.style.display = 'block';
   const key = (localStorage.getItem('artnews_gemini_key') || '').trim();
   if (!key) {
-    box.innerHTML = '<span class="tag">🤖 Gemini key မရှိ သေး ပါ — အောက် က ⚙️ ဆက်တင် မှာ key ထည့် ပါ (သို့) 🇲🇲 အခမဲ့ ဘာသာပြန် ကို သုံး ပါ</span>';
+    box.innerHTML = '<span class="tag">No Gemini key yet — add one in Settings below, or use the free Translate</span>';
     return;
   }
-  box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် နေ တယ်…</span>';
+  box.innerHTML = '<span class="tag">AI translating…</span>';
   try {
     const prompt = 'Translate this art news item into clear, natural Burmese (မြန်မာ) as spoken by an art journalist. Keep artist names, artwork titles, gallery/museum names and numbers accurate. Return only the translation.\n\nTitle: ' + it.title + '\nSummary: ' + it.snip;
     const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + encodeURIComponent(key), {
@@ -312,10 +309,58 @@ async function aiTr(catId, i, btn) {
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
     const out = j.candidates[0].content.parts.map(p => p.text || '').join('');
-    box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် (Gemini)</span><br>' + esc(out);
+    box.innerHTML = '<span class="tag">AI Translation (Gemini)</span><br>' + esc(out);
   } catch (e) {
-    box.innerHTML = '<span class="tag">⚠️ AI ဘာသာပြန် မရ: ' + esc(e.message) + ' — key/quota စစ် ပါ</span>';
+    box.innerHTML = '<span class="tag">AI translation failed: ' + esc(e.message) + ' — check key/quota</span>';
   }
+}
+
+// ---------------- bookmarks (v3.3) ----------------
+const BM_KEY = 'artwire_bookmarks_v1';
+function loadBookmarks() { try { return JSON.parse(localStorage.getItem(BM_KEY) || '[]'); } catch (e) { return []; } }
+function storeBookmarks(list) { try { localStorage.setItem(BM_KEY, JSON.stringify(list.slice(0, 300))); } catch (e) {} }
+function isBookmarked(link) { return loadBookmarks().some(b => b.link === link); }
+function bmLabel(link) { return isBookmarked(link) ? 'Saved' : 'Save'; }
+function toggleBookmarkItem(it) {
+  let list = loadBookmarks();
+  if (list.some(b => b.link === it.link)) { storeBookmarks(list.filter(b => b.link !== it.link)); return false; }
+  list.unshift({ source: it.source, title: it.title, link: it.link, date: it.date, snip: it.snip, img: it.img, body: (it.body || '').slice(0, 4000) });
+  storeBookmarks(list);
+  return true;
+}
+function syncBmButtons(link) {
+  const label = bmLabel(link);
+  for (const cid of Object.keys(state.cache)) {
+    (state.cache[cid] || []).forEach((x, xi) => { if (x.link === link) { const el = $('bm-' + cid + '-' + xi); if (el) el.textContent = label; } });
+  }
+  const rb = $('readerBmBtn');
+  if (rb && readerCtx && readerCtx.item && readerCtx.item.link === link) rb.textContent = label;
+}
+function toggleBookmark(catId, i) {
+  const it = state.cache[catId] && state.cache[catId][i];
+  if (!it) return;
+  toggleBookmarkItem(it);
+  if (state.tab === 'saved') renderSaved(); else syncBmButtons(it.link);
+  updateSavedTabLabel();
+}
+function toggleReaderBm() {
+  if (!readerCtx || !readerCtx.item) return;
+  toggleBookmarkItem(readerCtx.item);
+  if (state.tab === 'saved') renderSaved();
+  syncBmButtons(readerCtx.item.link);
+  updateSavedTabLabel();
+}
+function renderSaved() {
+  state.cache['saved'] = loadBookmarks();
+  if (!state.cache['saved'].length) {
+    $('feedMain').innerHTML = '<div class="err">No saved articles yet — tap Save on any article and it will be kept here for later.</div>';
+    return;
+  }
+  renderItems('saved');
+}
+function updateSavedTabLabel() {
+  const b = $('savedTabBtn');
+  if (b) { const n = loadBookmarks().length; b.textContent = 'Saved' + (n ? ' (' + n + ')' : ''); }
 }
 
 // ---------------- in-app reader ----------------
@@ -345,6 +390,7 @@ async function openReader(catId, i) {
   $('readerOrig').href = it.link;
   $('readerGTr').href = gTranslateUrl(it.link);
   $('readerTitle').textContent = it.title;
+  $('readerBmBtn').textContent = bmLabel(it.link);
   $('readerSrcChip').textContent = it.source;
   $('readerWhen').textContent = relTime(it.date);
   const img = $('readerImg');
@@ -357,11 +403,11 @@ async function openReader(catId, i) {
   const feedParas = parasFromText(strip(it.body));
   if (feedParas.join(' ').length > 700) {
     readerCtx.paras = feedParas;
-    setReaderBody(feedParas, 'feed ထဲ ပါတဲ့ စာ အပြည့်');
+    setReaderBody(feedParas, 'Full text from the feed');
     return;
   }
   readerCtx.paras = feedParas;
-  setReaderBody(feedParas.length ? feedParas : (it.snip ? [it.snip] : []), '⏳ စာ အပြည့် ဆွဲယူ နေ တယ်…');
+  setReaderBody(feedParas.length ? feedParas : (it.snip ? [it.snip] : []), 'Fetching full text…');
   try {
     const jk = (localStorage.getItem('artnews_jina_key') || '').trim();
     const r = await fetch('https://r.jina.ai/' + it.link, jk ? { headers: { 'Authorization': 'Bearer ' + jk } } : undefined);
@@ -370,9 +416,9 @@ async function openReader(catId, i) {
     if (ps.join(' ').length <= 500) throw new Error('short');
     if (!readerCtx || readerCtx.item !== it) return;
     readerCtx.paras = ps;
-    setReaderBody(ps, 'မူရင်း site မှ စာ အပြည့်');
+    setReaderBody(ps, 'Full text from the original site');
   } catch (e) {
-    if (readerCtx && readerCtx.item === it) setReaderBody(readerCtx.paras, '⚠️ စာ အပြည့် ဆွဲယူ မရ ပါ — "🇲🇲 မူရင်း အပြည့် (ဘာသာပြန်)" ခလုတ် နဲ့ ဆောင်းပါး တစ်ခုလုံး ကို မြန်မာ လို ဖတ် နိုင် ပါ တယ်');
+    if (readerCtx && readerCtx.item === it) setReaderBody(readerCtx.paras, 'Could not fetch the full text — tap "Original (Full, Translated)" to read the whole article in Burmese');
   }
 }
 function closeReader() {
@@ -393,9 +439,9 @@ function chunkText(t, n) {
 }
 async function readerQuickTr() {
   const box = $('readerTrBox');
-  if (!readerCtx || !readerCtx.paras.length) { box.style.display = 'block'; box.innerHTML = '<span class="tag">ဘာသာပြန် စရာ စာ မရှိ သေး ပါ — စာ အပြည့် ရောက်တဲ့ ထိ စောင့် ပါ</span>'; return; }
+  if (!readerCtx || !readerCtx.paras.length) { box.style.display = 'block'; box.innerHTML = '<span class="tag">Nothing to translate yet — wait for the full text to load</span>'; return; }
   box.style.display = 'block';
-  box.innerHTML = '<span class="tag">🇲🇲 စာကိုယ် ဘာသာပြန် နေ တယ်… (အပိုင်းလိုက်)</span>';
+  box.innerHTML = '<span class="tag">Translating the article… (in sections)</span>';
   try {
     const out = [];
     for (const p of readerCtx.paras.slice(0, 14)) {
@@ -403,18 +449,18 @@ async function readerQuickTr() {
       for (const c of chunkText(p, 420).slice(0, 3)) parts.push(await gtxTranslate(c));
       out.push(parts.join(' '));
     }
-    box.innerHTML = '<span class="tag">🇲🇲 စာကိုယ် ဘာသာပြန် (အခမဲ့ တိုက်ရိုက်)</span><br>' + out.map(p => esc(p)).join('<br><br>');
+    box.innerHTML = '<span class="tag">Article translation (free direct)</span><br>' + out.map(p => esc(p)).join('<br><br>');
   } catch (e) {
-    box.innerHTML = '<span class="tag">⚠️ ဘာသာပြန် မရ ပါ — နောက် မှ ပြန် စမ်း ပါ</span>';
+    box.innerHTML = '<span class="tag">Translation failed — try again later</span>';
   }
 }
 async function readerAiTr() {
   const box = $('readerTrBox');
   const key = (localStorage.getItem('artnews_gemini_key') || '').trim();
   box.style.display = 'block';
-  if (!key) { box.innerHTML = '<span class="tag">🤖 Gemini key မရှိ သေး ပါ — အောက် က ⚙️ ဆက်တင် မှာ key ထည့် ပါ</span>'; return; }
-  if (!readerCtx || !readerCtx.paras.length) { box.innerHTML = '<span class="tag">ဘာသာပြန် စရာ စာ မရှိ သေး ပါ — စာ အပြည့် ရောက်တဲ့ ထိ စောင့် ပါ</span>'; return; }
-  box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် နေ တယ်…</span>';
+  if (!key) { box.innerHTML = '<span class="tag">No Gemini key yet — add one in Settings below</span>'; return; }
+  if (!readerCtx || !readerCtx.paras.length) { box.innerHTML = '<span class="tag">Nothing to translate yet — wait for the full text to load</span>'; return; }
+  box.innerHTML = '<span class="tag">AI translating…</span>';
   try {
     const prompt = 'Translate this art news article into clear, natural Burmese (မြန်မာ) as spoken by an art journalist. Keep artist names, artwork titles, gallery/museum names and numbers accurate. Return only the translation.\n\nTitle: ' + readerCtx.item.title + '\n\n' + readerCtx.paras.join('\n\n').slice(0, 6000);
     const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + encodeURIComponent(key), {
@@ -424,9 +470,9 @@ async function readerAiTr() {
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
     const out = j.candidates[0].content.parts.map(p => p.text || '').join('');
-    box.innerHTML = '<span class="tag">🤖 AI ဘာသာပြန် (Gemini)</span><br>' + esc(out).replace(/\n/g, '<br>');
+    box.innerHTML = '<span class="tag">AI Translation (Gemini)</span><br>' + esc(out).replace(/\n/g, '<br>');
   } catch (e) {
-    box.innerHTML = '<span class="tag">⚠️ AI ဘာသာပြန် မရ: ' + esc(e.message) + ' — key/quota စစ် ပါ</span>';
+    box.innerHTML = '<span class="tag">AI translation failed: ' + esc(e.message) + ' — check key/quota</span>';
   }
 }
 
@@ -444,6 +490,18 @@ CATEGORIES.forEach(cat => {
   };
   nav.appendChild(b);
 });
+const savedBtn = document.createElement('button');
+savedBtn.className = 'tab';
+savedBtn.id = 'savedTabBtn';
+savedBtn.textContent = 'Saved';
+savedBtn.onclick = () => {
+  state.tab = 'saved';
+  nav.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  savedBtn.classList.add('on');
+  renderSaved();
+};
+nav.appendChild(savedBtn);
+updateSavedTabLabel();
 $('refreshBtn').onclick = () => loadCategory(state.tab, true);
 $('readerBack').onclick = closeReader;
 $('readerTrBtn').onclick = readerQuickTr;
@@ -451,19 +509,19 @@ $('readerAiBtn').onclick = readerAiTr;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeReader(); });
 $('saveKey').onclick = () => {
   try { localStorage.setItem('artnews_gemini_key', $('gemKey').value.trim()); } catch (e) {}
-  $('keyState').textContent = '✓ သိမ်း ပြီး';
+  $('keyState').textContent = 'Saved';
 };
-try { const k = localStorage.getItem('artnews_gemini_key'); if (k) { $('gemKey').value = k; $('keyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+try { const k = localStorage.getItem('artnews_gemini_key'); if (k) { $('gemKey').value = k; $('keyState').textContent = 'Key saved'; } } catch (e) {}
 $('saveRssKey').onclick = () => {
   try { localStorage.setItem('artwire_rss_key', $('rssKey').value.trim()); } catch (e) {}
-  $('rssKeyState').textContent = '✓ သိမ်း ပြီး';
+  $('rssKeyState').textContent = 'Saved';
 };
-try { const rk = localStorage.getItem('artwire_rss_key'); if (rk) { $('rssKey').value = rk; $('rssKeyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+try { const rk = localStorage.getItem('artwire_rss_key'); if (rk) { $('rssKey').value = rk; $('rssKeyState').textContent = 'Key saved'; } } catch (e) {}
 $('saveJinaKey').onclick = () => {
   try { localStorage.setItem('artnews_jina_key', $('jinaKey').value.trim()); } catch (e) {}
-  $('jinaKeyState').textContent = '✓ သိမ်း ပြီး';
+  $('jinaKeyState').textContent = 'Saved';
 };
-try { const jk0 = localStorage.getItem('artnews_jina_key'); if (jk0) { $('jinaKey').value = jk0; $('jinaKeyState').textContent = 'key ရှိ ပြီး'; } } catch (e) {}
+try { const jk0 = localStorage.getItem('artnews_jina_key'); if (jk0) { $('jinaKey').value = jk0; $('jinaKeyState').textContent = 'Key saved'; } } catch (e) {}
 loadCategory(state.tab, false);
 </script>
 </body>
